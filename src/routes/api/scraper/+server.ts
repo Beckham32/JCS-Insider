@@ -1,6 +1,7 @@
 import fs from 'fs';
 import puppeteer from "puppeteer";
 import type { RequestHandler } from './$types';
+import chromium from "@sparticuz/chromium";
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday"];
 
@@ -24,10 +25,7 @@ export const GET: RequestHandler = async (event) => {
 };
 
 async function getLatestPostUrl(): Promise<string> {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-    });
+    const browser = await spawnBrowser();
 
     const page = await browser.newPage();
     await page.goto("https://joanecardinalschubert.cbe.ab.ca/news-centre", {
@@ -55,10 +53,7 @@ async function getLatestPostUrl(): Promise<string> {
 
 
 async function getBlogData(url: string): Promise<string[]> {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-    });
+    const browser = await spawnBrowser();
 
     const page = await browser.newPage();
     await page.goto(url, {
@@ -112,4 +107,12 @@ function parseData(data: string[]): ScrapedData {
         }
     });
     return tree
+}
+
+async function spawnBrowser() {
+    return await puppeteer.launch({
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+    });
 }
