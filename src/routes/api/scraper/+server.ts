@@ -4,6 +4,7 @@ import type { RequestHandler } from './$types';
 // import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium";
+import { BLESS_TOKEN } from '$env/static/private';
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday"];
 
@@ -17,6 +18,17 @@ export const GET: RequestHandler = async (event) => {
     // const latestPostUrl = await getLatestPostUrl();
     const latestPostUrl = "https://joanecardinalschubert.cbe.ab.ca/news/50218c72-8b11-41bf-8871-61d54f6d01d5"
     console.log("Found page: ", latestPostUrl)
+
+    // {
+    // const browser = await spawnBrowser();
+    // const page = await browser.newPage();
+    // await page.goto("https://example.com", {
+    // waitUntil: "networkidle2",
+    // });
+    // await page.waitForNetworkIdle()
+    // await page.screenshot({ path: 'screenshot.png' });
+    // await browser.close();
+    //}
 
     let result: string[] = await getBlogData(latestPostUrl)
     let tree: ScrapedData = parseData(result)
@@ -61,6 +73,8 @@ async function getBlogData(url: string): Promise<string[]> {
     await page.goto(url, {
         waitUntil: "networkidle2",
     });
+    console.log("Page loaded: ", url)
+    await page.waitForNetworkIdle()
 
     await page.waitForSelector("#cravens-menu", { timeout: 5000 })
     const result = await page.evaluate(() => {
@@ -112,7 +126,9 @@ function parseData(data: string[]): ScrapedData {
 }
 
 async function spawnBrowser() {
-    return await puppeteer.connect({
-        browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
+    const wssEndpoint = `wss://chrome.browserless.io?token=${BLESS_TOKEN}`
+    console.log("Connecting to browserless: ", wssEndpoint)
+    return puppeteer.connect({
+        browserWSEndpoint: wssEndpoint,
     });
 }
