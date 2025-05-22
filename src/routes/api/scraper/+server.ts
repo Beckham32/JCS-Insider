@@ -1,6 +1,8 @@
 import fs from 'fs';
-import puppeteer from "puppeteer";
 import type { RequestHandler } from './$types';
+// import * as puppeteer from 'puppeteer';
+// import puppeteerCore from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium";
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday"];
@@ -110,10 +112,7 @@ function parseData(data: string[]): ScrapedData {
 }
 
 async function spawnBrowser() {
-    return await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath,
-        headless: chromium.headless,
+    return await puppeteer.connect({
+        browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
     });
 }

@@ -9,12 +9,7 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"postinstall": "npx puppeteer browsers install chrome",
-		"install": "npx puppeteer browsers install chrome",
-		"preinstall": "npx puppeteer browsers install chrome",
-		"prestart": "npx puppeteer browsers install chrome",
-		"start": "npx puppeteer browsers install chrome"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
@@ -31,6 +26,7 @@
 		"@sparticuz/chromium": "^106.0.2",
 		"appwrite": "^17.0.1",
 		"node-appwrite": "^15.0.0",
-		"puppeteer": "^24.6.1"
+		"puppeteer": "^24.9.0",
+		"puppeteer-core": "^24.9.0"
 	}
 }
