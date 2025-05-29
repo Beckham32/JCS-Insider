@@ -25,6 +25,7 @@
 	"dependencies": {
 		"@sparticuz/chromium": "^106.0.2",
 		"appwrite": "^17.0.1",
+		"cheerio": "^1.0.0",
 		"node-appwrite": "^15.0.0",
 		"puppeteer": "^24.9.0",
 		"puppeteer-core": "^24.9.0"
