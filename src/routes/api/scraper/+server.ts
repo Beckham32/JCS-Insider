@@ -1,8 +1,14 @@
 import fs from 'fs';
-import puppeteer from "puppeteer";
 import type { RequestHandler } from './$types';
+//const puppeteer = require('puppeteer-extra');
+//const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+
+puppeteer.use(StealthPlugin());
+
 
 export interface ScrapedData {
     [weekday: string]: {
@@ -24,10 +30,8 @@ export const GET: RequestHandler = async (event) => {
 };
 
 async function getLatestPostUrl(): Promise<string> {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-    });
+    const browser = await spawnBrowser();  
+
 
     const page = await browser.newPage();
     await page.goto("https://joanecardinalschubert.cbe.ab.ca/news-centre", {
@@ -55,16 +59,14 @@ async function getLatestPostUrl(): Promise<string> {
 
 
 async function getBlogData(url: string): Promise<string[]> {
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-    });
+    const browser = await spawnBrowser();
 
     const page = await browser.newPage();
     await page.goto(url, {
         waitUntil: "networkidle2",
     });
 
+    await page.screenshot({ path: 'headless-test.png' });
     await page.waitForSelector("#cravens-menu", { timeout: 5000 })
     const result = await page.evaluate(() => {
         const menu = document.querySelector("#cravens-menu") as HTMLDivElement;
@@ -112,4 +114,13 @@ function parseData(data: string[]): ScrapedData {
         }
     });
     return tree
+}
+
+async function spawnBrowser() {
+    return await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true,
+        defaultViewport: null,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+    });
 }
