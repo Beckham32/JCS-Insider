@@ -1,7 +1,7 @@
 import fs from 'fs';
 import type { RequestHandler } from './$types';
-//const puppeteer = require('puppeteer-extra');
-//const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+// const puppeteer = require('puppeteer-extra');
+// const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 

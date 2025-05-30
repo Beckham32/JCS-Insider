@@ -4,6 +4,7 @@
 
     let scrapedMenu: Promise<ScrapedData> | null = $state(null);
     onMount(async () => {
+        fetch("/api/scraper");
         let scraperData = await fetch("/api/scraper");
         scrapedMenu = scraperData.json();
         console.log(await scrapedMenu);
@@ -11,8 +12,8 @@
 </script>
 
 {#if !scrapedMenu}
-    <div class="flex justify-center items-center h-80 w-full">
-        <h1 class="w-full text-3xl text-center">Loading Menu...</h1>
+    <div class="flex justify-center items-center min-h-screen w-full bg-[#191919] text-white">
+        <h1 class="w-full text-3xl text-center font-bold">Loading Menu...</h1>
     </div>
 {:else}
     <div class="min-h-screen w-full h-full flex flex-col text-black scroll" style="background: linear-gradient(to bottom, rgba(255,30,0,0.6), rgba(207,161,34,0.5));">
