@@ -13,6 +13,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"autoprefixer": "^10.4.20",
@@ -27,7 +28,8 @@
 		"appwrite": "^17.0.1",
 		"cheerio": "^1.0.0",
 		"node-appwrite": "^15.0.0",
-		"puppeteer": "^24.9.0",
-		"puppeteer-core": "^24.9.0"
+		"puppeteer": "^24.6.1",
+		"puppeteer-extra": "^3.3.6",
+		"puppeteer-extra-plugin-stealth": "^2.11.2"
 	}
 }

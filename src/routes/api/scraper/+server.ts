@@ -1,12 +1,14 @@
 import fs from 'fs';
 import type { RequestHandler } from './$types';
-// import * as puppeteer from 'puppeteer';
-// import puppeteerCore from 'puppeteer-core';
-import puppeteer from 'puppeteer-core';
-import chromium from "@sparticuz/chromium";
-import { BLESS_TOKEN } from '$env/static/private';
+//const puppeteer = require('puppeteer-extra');
+//const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+
+puppeteer.use(StealthPlugin());
+
 
 export interface ScrapedData {
     [weekday: string]: {
@@ -15,8 +17,8 @@ export interface ScrapedData {
 }
 
 export const GET: RequestHandler = async (event) => {
-    // const latestPostUrl = await getLatestPostUrl();
-    const latestPostUrl = "https://joanecardinalschubert.cbe.ab.ca/news/50218c72-8b11-41bf-8871-61d54f6d01d5"
+    const latestPostUrl = await getLatestPostUrl();
+    //const latestPostUrl = "https://joanecardinalschubert.cbe.ab.ca/news/50218c72-8b11-41bf-8871-61d54f6d01d5"
     console.log("Found page: ", latestPostUrl)
 
     // {
@@ -39,7 +41,8 @@ export const GET: RequestHandler = async (event) => {
 };
 
 async function getLatestPostUrl(): Promise<string> {
-    const browser = await spawnBrowser();
+    const browser = await spawnBrowser();  
+
 
     const page = await browser.newPage();
     await page.goto("https://joanecardinalschubert.cbe.ab.ca/news-centre", {
@@ -76,6 +79,7 @@ async function getBlogData(url: string): Promise<string[]> {
     console.log("Page loaded: ", url)
     await page.waitForNetworkIdle()
 
+    await page.screenshot({ path: 'headless-test.png' });
     await page.waitForSelector("#cravens-menu", { timeout: 5000 })
     const result = await page.evaluate(() => {
         const menu = document.querySelector("#cravens-menu") as HTMLDivElement;
@@ -126,9 +130,10 @@ function parseData(data: string[]): ScrapedData {
 }
 
 async function spawnBrowser() {
-    const wssEndpoint = `wss://chrome.browserless.io?token=${BLESS_TOKEN}`
-    console.log("Connecting to browserless: ", wssEndpoint)
-    return puppeteer.connect({
-        browserWSEndpoint: wssEndpoint,
+    return await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true,
+        defaultViewport: null,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
 }

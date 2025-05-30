@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3284:3000"
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
